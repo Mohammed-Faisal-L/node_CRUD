@@ -20,9 +20,7 @@ userRouter.post("/user/createUser", async (request, response) => {
     await userData.save();
     response.json({ message: "user data saved successfully..." });
   } catch (error) {
-    response
-      .status(400)
-      .send("something went wrong while saving data... ", error);
+    response.status(400).send("something went wrong while saving data...");
   }
 });
 
@@ -33,9 +31,32 @@ userRouter.get("/user/getUsers", userAuth, async (request, response) => {
       message: "user data fetched successfully...",
     });
   } catch (error) {
-    response
-      .status(400)
-      .send("something went wrong while saving data... ", error);
+    response.status(400).send("something went wrong while fetching data...");
+  }
+});
+
+userRouter.delete("/user/deleteUser", userAuth, async (request, response) => {
+  try {
+    const userId = request.user._id;
+    if (userId) {
+      await User.findByIdAndDelete({ _id: userId });
+      response.json({ message: "user data deleted successfully..." });
+    } else {
+      throw new Error("Id not found...");
+    }
+  } catch (error) {
+    response.status(400).send("something went wrong while deleting data...");
+  }
+});
+
+userRouter.patch("/user/updateUser", userAuth, async (request, response) => {
+  try {
+    const actualUserData = request.user;
+    const newUserData = request.body;
+    await User.findByIdAndUpdate({ _id: actualUserData._id }, newUserData);
+    response.json({ message: "user data updated successfully..." });
+  } catch (error) {
+    response.status(400).send("something went wrong while updating data...");
   }
 });
 

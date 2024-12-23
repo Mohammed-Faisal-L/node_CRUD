@@ -16,6 +16,8 @@ authRoute.post("/login", async (request, response) => {
     if (isPassword) {
       const token = jwt.sign({ id: userGmail._id }, "Akash@123");
       response.cookie("token", token).send("Logged in successfully...");
+    } else {
+      response.send("something went wrong...");
     }
   } catch (error) {
     response.status(400).send("something went wrong while login... ", error);
